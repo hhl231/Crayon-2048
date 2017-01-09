@@ -1,0 +1,22 @@
+<build>
+  <projectname>HelloWorld</projectname>
+  <source>source/</source>
+  <output>output/%TARGET_NAME%</output>
+
+  <!-- Targets -->
+  <target name="javascript">
+    <platform>game-javascript</platform>
+  </target>
+
+  <target name="java">
+    <platform>game-java-awt</platform>
+  </target>
+
+  <target name="python">
+    <platform>game-python-pygame</platform>
+  </target>
+
+  <target name="csharp">
+    <platform>game-csharp-opentk</platform>
+  </target>
+</build>
