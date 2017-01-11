@@ -3,6 +3,18 @@
   <source>source/</source>
   <output>output/%TARGET_NAME%</output>
 
+  <spritesheets>
+    <sheet id="menus">
+      <prefix>images/menus/</prefix>
+    </sheet>
+    <sheet id="tiles">
+      <prefix>images/tiles/</prefix>
+    </sheet>
+    <sheet id="sprites">
+      <prefix>images/sprites/</prefix>
+    </sheet>
+  </spritesheets>
+
   <!-- Targets -->
   <target name="javascript">
     <platform>game-javascript</platform>

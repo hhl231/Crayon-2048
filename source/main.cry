@@ -1,57 +1,201 @@
 import Game;
 import Graphics2D;
 
+const TITLE = "Game 2048";
+const FPS = 30;
+const WINDOW_WIDTH = 640;
+const WINDOW_HEIGHT = 480;
+const GAME_WIDTH = 4;
+const GAME_HEIGHT = 4;
+
+class GameState {
+	field gridChangedSinceLastKeyPressed;
+	
+	constructor(gridChangedSinceLastKeyPressed){
+		this.gridChangedSinceLastKeyPressed = true;
+	}
+	
+	function makeFalse(){
+		this.gridChangedSinceLastKeyPressed = false;
+	}
+	
+	function makeTrue(){
+		this.gridChangedSinceLastKeyPressed = true;
+	}
+}
+
 function main() {
-  title = "Game 2048";
-  fps = 30;
-  windowWidth = 640;
-  windowHeight = 480;
-  window = new Game.GameWindow(title, fps, windowWidth, windowHeight);
+	State_Of_Game = new GameState(gridChangedSinceLastKeyPressed)
+	window = new Game.GameWindow(TITLE, FPS, WINDOW_WIDTH, WINDOW_HEIGHT);
+	gameGrid = createGrid(GAME_WIDTH, GAME_HEIGHT); 
+	addNumberToGrid (gameGrid, GAME_WIDTH, GAME_HEIGHT);
+	createImage (gameGrid, GAME_WIDTH, GAME_HEIGHT); //TODO write this function
 
-  color = "red";
+	while (true) {
+		events = window.pumpEvents();
+		for (event : events) {
+			if (event.type == Game.EventType.QUIT) {
+				return;
+			}
 
-  while (true) {
-    // get the events that have happened since the last frame
-    events = window.pumpEvents();
-    for (event : events) {
-      if (event.type == Game.EventType.QUIT) {
-        // remember that when the main() function ends, the program closes.
-        return;
-      }
+			// if the user presses an arrow key...
+			if (event.type == Game.EventType.KEY_DOWN) {
+				isPress = event.type == Game.EventType.KEY_DOWN;
+				switch (event.key) {
+					case Game.KeyboardKey.LEFT:
+						leftPressed(gameGrid, GAME_WIDTH, GAME_HEIGHT);
+						if (State_Of_Game.gridChangedSinceLastKeyPressed==true) {
+							addNumberToGrid (gameGrid, GAME_WIDTH,GAME_HEIGHT);
+						}
+						break;
+					case Game.KeyboardKey.RIGHT:
+						rightPressed(gameGrid, GAME_WIDTH, GAME_HEIGHT);
+						if (State_Of_Game.gridChangedSinceLastKeyPressed==true) {
+							addNumberToGrid (gameGrid, GAME_WIDTH,GAME_HEIGHT);
+						}
+						break;
+					case Game.KeyboardKey.UP:
+						upPressed(gameGrid, GAME_WIDTH, GAME_HEIGHT);
+						if (State_Of_Game.gridChangedSinceLastKeyPressed==true) {
+							addNumberToGrid (gameGrid, GAME_WIDTH,GAME_HEIGHT);
+						}
+						break;
+					case Game.KeyboardKey.DOWN:
+						downPressed(gameGrid, GAME_WIDTH, GAME_HEIGHT);
+						if (State_Of_Game.gridChangedSinceLastKeyPressed==true) {
+							addNumberToGrid (gameGrid, GAME_WIDTH,GAME_HEIGHT);
+						}
+						break;
+				}
+			}
+			createImage(gameGrid, GAME_WIDTH, GAME_HEIGHT); //TODO
+		}
+	}
+}
 
-      // if the user presses any key...
-      if (event.type == Game.EventType.KEY_DOWN) {
-        // toggle the box between red and blue
-        if (color == "red") {
-          color = "blue";
-        } else {
-          color = "red";
-        }
-      }
-    }
+function addNumberToGrid (grid, GAME_WIDTH,GAME_HEIGHT) { //TODO check if this works
+	x = Math.floor(Math.random()*GAME_WIDTH);
+	y = Math.floor(Math.random()*GAME_HEIGHT);
+	if (grid[x][y] == 0) {
+		grid[x][y] = 2;
+	} else {
+		addNumberToGrid (grid, GAME_WIDTH,GAME_HEIGHT)
+	}
+}
 
-    Graphics2D.Draw.fill(0, 0, 0); // fill the screen with black
+function upPressed(grid, gridWidth, gridHeight) {
+	State_Of_Game.makeFalse;
+	for (x = 0; x < gridWidth; ++x) {
+		input = [];
+		for (y = 0; y < gridHeight; ++y) {
+			input.push(grid[x][y]);
+		}
+		
+		output = compress(input);
+		
+		//hacky way to do it b/c you can compare strings but not lists
+		if ("" + input != "" + output) {
+			State_Of_Game.makeTrue;
+		}
 
-    // coordinates for a box
-    left = 200;
-    top = 100;
-    width = 50;
-    height = 50;
+		i = 0;
+		for (y = 0; y < gridHeight; ++y) {
+			grid[x][y] = output[i];
+			++i;
+		}
+	}
+	return grid;  
+}
 
-    // determine color for the box.
-    if (color == "red") {
-      r = 255;
-      g = 0;
-      b = 0;
-    } else {
-      r = 0;
-      g = 0;
-      b = 255;
-    }
+function downPressed(grid, gridWidth, gridHeight) {
+	State_Of_Game.makeFalse;
+	for (x = 0; x < gridWidth; ++x) {
+		input = [];
+		for (y = (gridHeight-1); y >= 0; --y) {
+			input.push(grid[x][y]);
+		}
+	 
+		output = compress(input);
 
-    // draw the box
-    Graphics2D.Draw.rectangle(left, top, width, height, r, g, b);
+		//hacky way to do it b/c you can compare strings but not lists
+		if ("" + input != "" + output) {
+			State_Of_Game.makeTrue;
+		}
 
-    window.clockTick();
-  }
+		i = 0;
+		for (y = (gridHeight-1); y >= 0; --y) {
+			grid[x][y] = output[i];
+			++i;
+		}
+	}
+	return grid;  
+}
+
+function leftPressed(grid, gridWidth, gridHeight) {
+	State_Of_Game.makeFalse;
+	for (y = 0; y < gridHeight; ++y) {
+		input = [];
+		for (x = 0; x < gridWidth; ++x) {
+			input.push(grid[x][y]);
+		}
+
+		output = compress(input);
+
+		//hacky way to do it b/c you can compare strings but not lists
+		if ("" + input != "" + output) {
+			State_Of_Game.makeTrue;
+		}
+
+		i = 0;
+		for (x = 0; x < gridWidth; ++x) {
+			grid[x][y] = output[i];
+			++i;
+		}
+	}
+	return grid;  
+}
+
+function rightPressed(grid, gridWidth, gridHeight) {
+	State_Of_Game.makeFalse;
+	for (y = 0; y < gridHeight; ++y) {
+		input = [];
+		for (x = (gridWidth-1); x >= 0; --x) {
+			input.push(grid[x][y]);
+		}
+
+		output = compress(input);
+
+		//hacky way to do it b/c you can compare strings but not lists
+		if ("" + input != "" + output) {
+			State_Of_Game.makeTrue;
+		}
+
+		i = 0;
+		for (x = (gridWidth-1); x >= 0; --x) {
+			grid[x][y] = output[i];
+			++i;
+		}
+	}
+	return grid;  
+}
+ 
+ function compress(list) {
+	output = [];
+	last_is_compressed = true;
+	for (i = 0; i < list.length; ++i) {
+		num = list[i];
+		if (num > 0) {
+			if (!last_is_compressed && output[output.length - 1] == num) {
+				output[output.length - 1] *= 2;
+			} else {
+				aoutput.push(num);
+			}
+			last_is_compressed = output[output.length - 1] != num;
+		}
+	}
+
+	while (output.length < list.length) {
+		output.push(0);
+	}
+	return output;
 }
